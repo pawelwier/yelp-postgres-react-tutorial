@@ -1,11 +1,15 @@
 require('dotenv').config();
 const express = require('express');
+
+const cors = require('cors');
 const morgan = require('morgan');
 const db = require('./db/index');
+
 
 const app = express();
 
 app.use(morgan("dev"));
+app.use(cors())
 app.use(express.json());
 
 app.get('/api/v1/restaurants', async (req, res) => {
@@ -16,7 +20,7 @@ app.get('/api/v1/restaurants', async (req, res) => {
         status: "success",
         results: results.rows.length,
         data: {
-            restaurant: results.rows
+            restaurants: results.rows
         }
     })
 });
@@ -25,7 +29,9 @@ app.get('/api/v1/restaurants/:id', async (req, res) => {
     const results = await db.query(`select * from restaurants where id = $1`, [req.params.id])
     res.status(200).json({
         status: "success",
-        results: results.rows[0]
+        data: {
+            restaurant: results.rows[0]
+        }
     })
 })
 
@@ -36,9 +42,11 @@ app.post('/api/v1/restaurants', async (req, res) => {
         req.body.price_range
     ]);
     console.log(results);
-    res.status(200).json({
+    res.status(201).json({
         status: "success",
-        results: results.rows[0]
+        data: {
+            restaurant: results.rows[0]
+        }
     })
     
 })
