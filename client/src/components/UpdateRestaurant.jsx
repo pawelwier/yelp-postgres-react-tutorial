@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import RestaurantFinder from '../apis/RestaurantFinder'
 
 const UpdateRestaurant = () => {
     const { id } = useParams();
+    const history = useHistory();
     const [name, setName] = useState("")
     const [location, setLocation] = useState("")
     const [priceRange, setPriceRange] = useState("")
@@ -18,7 +19,17 @@ const UpdateRestaurant = () => {
         }
 
         fetchData();
-    }, [])
+    }, []);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const UpdatedRestaurant = await RestaurantFinder.put(`/${id}`, {
+            name,
+            location,
+            price_range: priceRange
+        })
+        history.push("/")
+    }
 
     return (
         <div>
@@ -35,7 +46,7 @@ const UpdateRestaurant = () => {
                     <label htmlFor="price_range">Price range</label>
                     <input value={priceRange} onChange={e => setPriceRange(e.target.value)} id="price_range" className="form-control" type="number" />
                 </div>
-                <button className="btn btn-primary">Submit</button>
+                <button type="submit" onClick={handleSubmit} className="btn btn-primary">Submit</button>
             </form>
         </div>
     )
