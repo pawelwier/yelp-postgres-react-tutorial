@@ -1,7 +1,8 @@
 import React, { useEffect, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
-import RestaurantFinder from '../apis/RestaurantFinder'
 import { RestaurantsContext } from '../context/RestaurantsContext'
+import RestaurantFinder from '../apis/RestaurantFinder'
+import StarRating from '../components/StarRating'
 
 const RestaurantList = () => {
 
@@ -13,6 +14,7 @@ let history = useHistory();
         const fetchData = async () => {
                 try {
                     const response = await RestaurantFinder.get("/")
+                    console.log(response.data.data);
                     setRestaurants(response.data.data.restaurants)
                 } catch (err) {
 
@@ -41,6 +43,17 @@ let history = useHistory();
         history.push(`/restaurants/${id}`)
     }
 
+    const renderRating = ({ average_rating, count }) => {
+        const ratingDisplay = count ? (
+            <>
+                <StarRating rating={average_rating} />
+                 <span>({count})</span>
+            </>
+        ) : <span>No reviews</span>
+
+        return ratingDisplay;
+    }
+
     return (
         <div className="list-group">
             <table className="table table-hover table-dark">
@@ -61,7 +74,7 @@ let history = useHistory();
                             <td>{restaurant.name}</td>
                             <td>{restaurant.location}</td>
                             <td>{"$".repeat(restaurant.price_range)}</td>
-                            <td>rating</td>
+                            <td>{renderRating(restaurant)}</td>
                             <td><button onClick={(e) => handleUpdate(e, restaurant.id)} className="btn btn-warning">Edit</button></td>
                             <td><button onClick={(e) => handleDelete(e, restaurant.id)} className="btn btn-danger">Delete</button></td>
                         </tr>

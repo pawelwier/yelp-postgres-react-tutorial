@@ -23,7 +23,7 @@ const RestaurantDetailPage = () => {
             {selectedRestaurant && (
                 <>
                     <h1>{selectedRestaurant.restaurant.name}</h1>
-                    <StarRating rating={selectedRestaurant} />
+                    <StarRating rating={selectedRestaurant.restaurant.average_rating} />
                     <div className="mt-3">
                         <Reviews reviews={selectedRestaurant.reviews} />
                     </div>
